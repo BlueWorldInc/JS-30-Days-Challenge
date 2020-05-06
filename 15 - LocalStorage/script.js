@@ -1,26 +1,28 @@
 const addItems = document.querySelector('.add-items');
 const itemsList = document.querySelector('.plates');
 const item = document.querySelector('input[name="item"]');
-const items = [];
+let items = [];
 let listInitialized = false;
 
-addToList("Gambas");
+// addToList({name: "Gambas", isChecked: "checked"});
 initItems();
 initList(items);
 
-function addToList(item) {
+function addToList(iter) {
+    // console.log(item);
+    console.log(iter);
     if (!listInitialized) {
         listInitialized = true;
-        itemsList.innerHTML = "<li>" + item + "</li>";
+        itemsList.innerHTML = "<li> <input type='checkbox' id='" + iter.name + "' value='" + iter.name + "' " + iter.isChecked + " onChange='boxToggle(this)'> <label for='" + iter.name + "'>"+ iter.name + "</label></li>";
     } else {
-        itemsList.innerHTML += "<li>" + item + "</li>";
+        itemsList.innerHTML += "<li> <input type='checkbox' id='" + iter.name + "' value='" + iter.name + "' " + iter.isChecked + " onChange='boxToggle(this)'> <label for='" + iter.name + "'>"+ iter.name + "</label></li>";
         //localStorage.setItem(item, '{"name": "history", "age": 15}');
     }
 }
 
 function initList(it) {
     for (let ite of it) {
-        addToList(ite);
+        addToList({name: ite, isChecked: JSON.parse(localStorage.getItem(ite)).isChecked});
     }
 }
 
@@ -30,19 +32,30 @@ function initItems() {
      }
 }
 
+function boxToggle(iters) {
+    console.log(localStorage.getItem(iters.value));
+    isChecked = JSON.parse(localStorage.getItem(iters.value)).isChecked;
+    if (isChecked === "checked") {
+        localStorage.setItem(iters.value, '{"isChecked": ""}');
+    } else {
+        localStorage.setItem(iters.value, '{"isChecked": "checked"}');
+    }
+}
+
 document.getElementsByClassName("add-items")[0].addEventListener("submit", eventHandler);
 
 function eventHandler(event) {
     event.preventDefault();
-    localStorage.setItem(item.value, '{"name": "history", "age": 15}');
-    addToList(item.value);
-    // let l = localStorage.getItem("Fisher");
-    // console.log(l);
-    // let j = JSON.parse(l);
-    // console.log(j.age);
+    localStorage.setItem(item.value, '{"isChecked": ""}');
+    addToList({name: item.value, isChecked: ""});
 }
 
 function clearLocalStorage() {
     localStorage.clear();
+    itemsList.innerHTML = "<li>Loading Tapas...</li>";
+    listInitialized = false;
+    items = [];
+    initItems();
+    initList(items);
     console.log("clear");
 }
