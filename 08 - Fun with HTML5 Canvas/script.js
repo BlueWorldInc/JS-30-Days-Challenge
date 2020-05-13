@@ -2,12 +2,17 @@ const canvas = document.querySelector("#draw");
 /** @type {CanvasRenderingContext2D} */
 const ctx = canvas.getContext("2d");
 let isDrawing = false;
+let lastX = 0;
+let lastY = 0;
+let hue = 0;
+let evolution = true;
 
 ctx.canvas.width = window.innerWidth;
 ctx.canvas.height = window.innerHeight;
+ctx.globalCompositeOperation = 'lighter';
 
-ctx.fillStyle = "blue";
-ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+// ctx.fillStyle = "blue";
+// ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
 function drawMoz() {
     ctx.strokeStyle = "yellow";
@@ -38,21 +43,33 @@ canvas.addEventListener("mouseout", function () {
 
 function startDraw(evt) {
     isDrawing = true;
-    ctx.beginPath();
-    x = getMousePos(canvas, evt).x;
-    y = getMousePos(canvas, evt).y;
-    ctx.moveTo(x, y);
-    ctx.lineWidth = 15;
-    ctx.lineJoin = 'round';
-    ctx.lineCap = 'round';
+    lastX = getMousePos(canvas, evt).x;
+    lastY = getMousePos(canvas, evt).y;
 }
 
 function draw(evt) {
     if (isDrawing) {
+        ctx.beginPath();
+        ctx.strokeStyle = "hsl(" + hue++ + ", 100%, 50%)";
+        if (ctx.lineWidth === 75) {
+            evolution = false;
+        } else if (ctx.lineWidth === 1) {
+            evolution = true;
+        }
+        if (evolution) {
+            ctx.lineWidth++;
+        } else {
+            ctx.lineWidth--;
+        }
+        ctx.lineJoin = 'round';
+        ctx.lineCap = 'round';
+        ctx.moveTo(lastX, lastY);
         x = getMousePos(canvas, evt).x;
         y = getMousePos(canvas, evt).y;
         ctx.lineTo(x, y);
         ctx.stroke();
+        lastX = x;
+        lastY = y;
     }
 }
 
