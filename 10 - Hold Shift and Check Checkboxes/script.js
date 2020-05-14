@@ -34,11 +34,11 @@ for (let i = 0; i < items.length; i++) {
 // }
 
 function multipleSelect(e) {
-    if (e.shiftKey) {
-        firstSelect = !firstSelect;
-        if (firstSelect) {
-            firstItemIndex = e.currentTarget.itemIndex;
-        } else {
+    firstSelect = !firstSelect;
+    if (firstSelect) {
+        firstItemIndex = e.currentTarget.itemIndex;
+    } else {
+        if (e.shiftKey) {
             selectItems(firstItemIndex, e.currentTarget.itemIndex);
         }
     }
@@ -49,6 +49,6 @@ function selectItems(firstItemIndex, secondItemIndex) {
         [firstItemIndex, secondItemIndex] = [secondItemIndex, firstItemIndex];
     }
     for (let i = firstItemIndex; i < secondItemIndex; i++) {
-        items[i].childNodes[1].checked = !items[i].childNodes[1].checked;
+        items[i].childNodes[1].checked = true;
     }
 }
